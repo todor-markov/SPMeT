@@ -62,12 +62,12 @@ r_vec = (0:p.delta_r_n:1)';
 r_vecx = r_vec(2:end-1);
 
 % Finite difference points along x-coordinate
-p.Nxn = 10;
-p.Nxs = 5;
-p.Nxp = 10;
-p.Nx = p.Nxn+p.Nxs+p.Nxp;
+% p.Nxn = 10;
+% p.Nxs = 5;
+% p.Nxp = 10;
+% p.Nx = p.Nxn+p.Nxs+p.Nxp;
 Nx = p.Nx - 3;
-x_vec_spme = linspace(0,1,Nx+4);
+% x_vec_spme = linspace(0,1,Nx+4);
 
 
 p.delta_x_n = 1 / p.Nxn;

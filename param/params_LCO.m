@@ -16,7 +16,7 @@ p.L_s = 25e-6;     % Thickness of separator [m]
 p.L_p = 100e-6;     % Thickness of positive electrode [m]
 
 L_ccn = 25e-6;    % Thickness of negative current collector [m]
-L_ccp = 25e-6;    % Thickness of negative current collector [m]
+L_ccp = 25e-6;    % Thickness of positive current collector [m]
 
 % Particle Radii
 p.R_s_n = 10e-6;   % Radius of solid particles in negative electrode [m]
@@ -148,3 +148,8 @@ p.delta_x_n = 1 / p.Nxn;
 p.delta_x_s = 1 / p.Nxs;
 p.delta_x_p = 1 / p.Nxp;
 
+%% Clear internal variables
+clear epsilon_f_n epsilon_f_p
+clear L_ccn L_ccp
+clear m_cc m_n m_p m_s
+clear rho_ccn rho_ccp rho_e rho_f rho_sn rho_sp

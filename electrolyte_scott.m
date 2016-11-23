@@ -11,7 +11,7 @@ function c_ex = electrolyte_scott(data,p)
     % run simulation
     x0 = data.c_e0;
     t = data.time;
-    [t,x] = ode23s(@(t,x) ode_electrolyte(t,x,data,p),t,x0);
+    [t1,x] = ode23s(@(t,x) ode_electrolyte(t,x,data,p),t,x0);
     
     % Parse output
     c_e = x';
