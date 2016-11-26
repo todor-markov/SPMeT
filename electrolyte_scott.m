@@ -52,7 +52,7 @@ function [c_e_dot] = ode_electrolyte(t,c_e,data,p)
     % Compute Electrolyte Diffusion Coefficient and Derivative
     [D_en,dD_en] = electrolyteDe(c_en);
     [D_es,dD_es] = electrolyteDe(c_es);
-    [D_ep,dD_ep] = electrolyteDe(c_ep);
+    [D_ep,dD_ep] = electrolyteDe(c_ep);                    
 
     % ADD BRUGGEMAN RELATION % Apr.22 2016 by Saehong Park
     D_en_eff = D_en .* p.epsilon_e_n.^(p.brug-1);
