@@ -15,6 +15,7 @@
 clc;
 close all;
 
+
 disp('Single Particle Model w/ Electrolyte (SPMe)')
 disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 
@@ -37,8 +38,8 @@ clear Delta_cn Delta_cp cn_low cp_low cn_high cp_high
 %%%%%%%%%%%%%%% MANUAL INPUT WITH C-RATE %%%%%%%%%%%%%%%%%%%%%%%%%
 p.delta_t = 1;
 t = 0:p.delta_t:(2);
-%I = [2*p.OneC*ones(length(t)-1,1);0];
-I = 2*p.OneC*ones(length(t),1);
+I = [2*p.OneC*ones(length(t)-1,1);0];
+%I = 2*p.OneC*ones(length(t),1);
 
 %%%%%%%%%%%%%%% DYNAMIC CHARGE/DISCHARGE CYCLES FROM EXPERIMENTS %%%%%%%%%%%%%%%
 % load('input-data/UDDS');
@@ -197,7 +198,7 @@ s(1).T = s0.T0;
 for k = 1:NT
     
     % SPMe Voltage w/o electrolyte concentration term
-    s(k+1).V_noVCE = nonlinearSPMOutputVoltage_Scott(p,c_ss_n(k),c_ss_p(k),cen_bar(k),ces_bar(k),cep_bar(k),I(k));
+    s(k).V_noVCE = nonlinearSPMOutputVoltage_Scott(p,c_ss_n(k),c_ss_p(k),cen_bar(k),ces_bar(k),cep_bar(k),I(k));
     
     % Overpotentials due to electrolyte subsystem
     kap_n = electrolyteCond(cen_bar(k));
@@ -218,23 +219,23 @@ for k = 1:NT
     end
     
     % Overpotential due to electrolyte conductivity
-    s(k+1).V_electrolyteCond = (p.L_n/(2*kap_n_eff) + 2*p.L_s/(2*kap_s_eff) + p.L_p/(2*kap_p_eff))*I(k); ...
+    s(k).V_electrolyteCond = (p.L_n/(2*kap_n_eff) + 2*p.L_s/(2*kap_s_eff) + p.L_p/(2*kap_p_eff))*I(k); ...
         
     % Overpotential due to electrolyte polarization
-    s(k+1).V_electrolytePolar = (2*p.R*p.T_amb)/(p.Faraday) * (1-p.t_plus)* ...
+    s(k).V_electrolytePolar = (2*p.R*p.T_amb)/(p.Faraday) * (1-p.t_plus)* ...
             ( (1+dfca_n) * (log(cens(k)) - log(ce0n(k))) ...
              +(1+dfca_s) * (log(cesp(k)) - log(cens(k))) ...
              +(1+dfca_p) * (log(ce0p(k)) - log(cesp(k))));
     
     % Add 'em up!
-    s(k+1).V = s(k+1).V_noVCE + s(k+1).V_electrolyteCond + s(k+1).V_electrolytePolar;
+    s(k).V = s(k).V_noVCE + s(k).V_electrolyteCond + s(k).V_electrolytePolar;
     
     % SPM Voltage
-    s(k+1).V_spm = nonlinearSPMOutputVoltage_Scott(p,c_ss_n(k),c_ss_p(k),p.c_e,p.c_e,p.c_e,I(k));
+    s(k).V_spm = nonlinearSPMOutputVoltage_Scott(p,c_ss_n(k),c_ss_p(k),p.c_e,p.c_e,p.c_e,I(k));
     
     % State-of-Charge (Bulk)
-    s(k+1).SOC_n = 3/p.c_s_n_max * trapz(p.r_vec,p.r_vec.^2.*c_n(k,:)');
-    s(k+1).SOC_p = 3/p.c_s_p_max * trapz(p.r_vec,p.r_vec.^2.*c_p(k,:)');
+    s(k).SOC_n = 3/p.c_s_n_max * trapz(p.r_vec,p.r_vec.^2.*c_n(k,:)');
+    s(k).SOC_p = 3/p.c_s_p_max * trapz(p.r_vec,p.r_vec.^2.*c_p(k,:)');
     
     % Total Moles of Lithium in Solid
     s(k).n_Li_s = (3*p.epsilon_s_p*p.L_p*p.Area) * trapz(p.r_vec,p.r_vec.^2.*c_p(k,:)') ...
@@ -247,6 +248,7 @@ for k = 1:NT
     s(k).c_ss_n = c_ss_n(k);
     s(k).c_ss_p = c_ss_p(k);
     s(k).T = s0.T0;
+    s(k).I = I(k);
     
 end
 
