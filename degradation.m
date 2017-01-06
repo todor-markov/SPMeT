@@ -8,7 +8,11 @@
 
 function Q = degradation(V, b, n)
 
-Q = 100 - (trapz(V) / b) * n^0.5;
+Q = zeros(1,n);
+
+for k = 1:n
+    Q(k) = 100 - (trapz(exp(V)) / b) * k^0.5;
+end
 
 end
 

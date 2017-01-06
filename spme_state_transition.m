@@ -37,8 +37,8 @@ clear Delta_cn Delta_cp cn_low cp_low cn_high cp_high
 
 %%%%%%%%%%%%%%% MANUAL INPUT WITH C-RATE %%%%%%%%%%%%%%%%%%%%%%%%%
 p.delta_t = 1;
-t = 0:p.delta_t:(2);
-I = [2*p.OneC*ones(length(t)-1,1);0];
+t = 0:p.delta_t:(120);
+I = 2*p.OneC*ones(length(t),1);
 %I = 2*p.OneC*ones(length(t),1);
 
 %%%%%%%%%%%%%%% DYNAMIC CHARGE/DISCHARGE CYCLES FROM EXPERIMENTS %%%%%%%%%%%%%%%

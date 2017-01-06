@@ -39,11 +39,11 @@ I = 2*p.OneC*ones(size(t));
 
 
 %%%%%%%%%%%%%%% DYNAMIC CHARGE/DISCHARGE CYCLES FROM EXPERIMENTS %%%%%%%%%%%%%%%
-% load('input-data/UDDS');
-% 
-% I = -current_exp'/p.Area*10;
-% t = time_exp';
-% p.delta_t = t(2)-t(1);
+%load('input-data/UDDS');
+ 
+%I = -current_exp'/p.Area*10;
+%t = time_exp';
+%p.delta_t = t(2)-t(1);
 
 
 % Data structure with time,current, initial condition
