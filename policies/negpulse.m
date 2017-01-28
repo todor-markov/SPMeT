@@ -9,7 +9,7 @@ p = updateParams(p, 30);
 
 VMin = 3.0;
 VMax = 4.2;
-restPeriod = 30;
+ki = 10;
 
 s = getInitState(p, sys_n, sys_p, VMin);
 
@@ -28,6 +28,10 @@ while s.V < VMax
         end
     end
     
+    if s.V >= VMax
+        break
+    end
+    
     for k = 1:3
         s = updateState(p, sys_n, sys_p, s, 0.5 * p.OneC);
         s1(end+1) = s;
@@ -39,31 +43,24 @@ while s.V < VMax
     end
 end
 
-for k = 1:restPeriod
-    s = updateState(p, sys_n, sys_p, s, 0 * p.OneC);
+acc_err = 0
+for i = 1:10
+    err = 1 * VMax - s.V;
+    acc_err = acc_err + err;
+    s = updateState(p, sys_n, sys_p, s, -(ki * acc_err) * p.OneC);
     s1(end+1) = s;
     v1(end+1) = s.V;
     soc1(end+1) = s.SOC_n;
 end
 
-for ChRate = [0.36, 0.18, 0.1]
-    while s.V < VMax
-        s = updateState(p, sys_n, sys_p, s, -ChRate * p.OneC);
-        s1(end+1) = s;
-        v1(end+1) = s.V;
-        soc1(end+1) = s.SOC_n;
-    end
-    
-    if ChRate == 0.1
-        break
-    end
-    
-    for k = 1:restPeriod
-        s = updateState(p, sys_n, sys_p, s, 0 * p.OneC);
-        s1(end+1) = s;
-        v1(end+1) = s.V;
-        soc1(end+1) = s.SOC_n;
-    end
+
+while s.I < -0.1 * p.OneC
+    err = 1 * VMax - s.V;
+    acc_err = acc_err + err;
+    s = updateState(p, sys_n, sys_p, s, -(ki * acc_err) * p.OneC);
+    s1(end+1) = s;
+    v1(end+1) = s.V;
+    soc1(end+1) = s.SOC_n;
 end
 
 s2 = s;

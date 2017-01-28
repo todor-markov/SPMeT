@@ -194,7 +194,6 @@ s(1).T = s0.T0;
 % SOC_n = zeros(size(t));
 % SOC_p = zeros(size(t));
 % n_Li_s = zeros(size(t));
-
 for k = 1:NT
     
     % SPMe Voltage w/o electrolyte concentration term

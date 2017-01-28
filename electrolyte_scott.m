@@ -3,7 +3,6 @@
 %   Adopted from DFN model
 
 function c_ex = electrolyte_scott(data,p)
-    
     Nn = p.Nxn - 1;
     Np = p.Nxp - 1;
     Nx = p.Nx - 3;
@@ -12,7 +11,6 @@ function c_ex = electrolyte_scott(data,p)
     x0 = data.c_e0;
     t = data.time;
     [t1,x] = ode23s(@(t,x) ode_electrolyte(t,x,data,p),t,x0);
-    
     % Parse output
     c_e = x';
     
@@ -30,7 +28,6 @@ function c_ex = electrolyte_scott(data,p)
         c_ex(:,k) = [c_e_bcs(1); c_en; c_e_bcs(2); c_es; c_e_bcs(3); c_ep; c_e_bcs(4)];
         
     end
-
 end
 
 function [c_e_dot] = ode_electrolyte(t,c_e,data,p)

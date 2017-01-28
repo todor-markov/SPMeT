@@ -1,4 +1,4 @@
-function [states_ch, Voltage_ch, SOC_n_ch, states_dsch, Voltage_dsch, SOC_n_dsch] = runPolicy(p, sys_n, sys_p, VMin, VMax, restPeriod, ChRate, VCutoffs, DschRate)
+function [states_ch, Voltage_ch, SOC_n_ch, states_dsch, Voltage_dsch, SOC_n_dsch] = runPolicy(p, sys_n, sys_p, VMin, VMax, ChParams, stepTypes, VCutoffs, DschRate)
 
 s = getInitState(p, sys_n, sys_p, VMin);
 
@@ -6,24 +6,38 @@ states_ch = s;
 Voltage_ch = s.V;
 SOC_n_ch = s.SOC_n;
 
-for k = 1:length(ChRate)
-    while s.V < VCutoffs(k) * VMax
-        s = updateState(p, sys_n, sys_p, s, -ChRate(k) * p.OneC);
-        states_ch(end+1) = s;
-        Voltage_ch(end+1) = s.V;
-        SOC_n_ch(end+1) = s.SOC_n;
+ki = 10;
+
+for k = 1:length(stepTypes)
+    if stepTypes(k) == 1
+        while s.V < VCutoffs(k) * VMax
+            s = updateState(p, sys_n, sys_p, s, -ChParams(k) * p.OneC);
+            states_ch(end+1) = s;
+            Voltage_ch(end+1) = s.V;
+            SOC_n_ch(end+1) = s.SOC_n;
+        end
     end
     
-    if k == length(ChRate)
-        break
+    if stepTypes(k) == 2
+        acc_err = 0
+        for i = 1:10
+            err = VCutoffs(k) * VMax - s.V;
+            acc_err = acc_err + err;
+            s = updateState(p, sys_n, sys_p, s, -(ki * acc_err) * p.OneC);
+            states_ch(end+1) = s;
+            Voltage_ch(end+1) = s.V;
+            SOC_n_ch(end+1) = s.SOC_n;
+        end
+        
+        while s.I < -ChParams(k) * p.OneC
+            err = VCutoffs(k) * VMax - s.V;
+            acc_err = acc_err + err;
+            s = updateState(p, sys_n, sys_p, s, -(ki * acc_err) * p.OneC);
+            states_ch(end+1) = s;
+            Voltage_ch(end+1) = s.V;
+            SOC_n_ch(end+1) = s.SOC_n;
+        end
     end
-    
-    for j = 1:restPeriod
-        s = updateState(p, sys_n, sys_p, s, 0);
-        states_ch(end+1) = s;
-        Voltage_ch(end+1) = s.V;
-        SOC_n_ch(end+1) = s.SOC_n;
-    end        
 end
 
 states_dsch = s;
