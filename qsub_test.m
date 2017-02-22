@@ -1,6 +1,6 @@
 function out = qsub_test(n, filename)
 
-pause(180)
+pause(15)
 
 a = 1:n;
 save(filename,'a')
