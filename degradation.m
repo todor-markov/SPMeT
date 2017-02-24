@@ -1,4 +1,4 @@
-% Inputs: 
+load% Inputs: 
 % V - voltage curve produced by policy
 % b - normalization constant
 % n - number of cycles that policy is run

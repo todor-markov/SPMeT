@@ -10,17 +10,19 @@ ki = 10;
 
 for k = 1:length(stepTypes)
     if stepTypes(k) == 1
-        while s.V < VCutoffs(k) * VMax
-            s = updateState(p, sys_n, sys_p, s, -ChParams(k) * p.OneC);
-            states_ch(end+1) = s;
-            Voltage_ch(end+1) = s.V;
-            SOC_n_ch(end+1) = s.SOC_n;
+        while s(end).V < VCutoffs(k) * VMax
+            s = updateState2(p, sys_n, sys_p, s(end), -ChParams(k) * p.OneC, 10);
+            states_ch(end+1:end+10) = s;
+            Voltage_ch(end+1:end+10) = s.V;
+            SOC_n_ch(end+1:end+10) = s.SOC_n;
         end
     end
     
+    s = s(end);
+    
     if stepTypes(k) == 2
         acc_err = 0
-        for i = 1:10
+        for i = 1:20
             err = VCutoffs(k) * VMax - s.V;
             acc_err = acc_err + err;
             s = updateState(p, sys_n, sys_p, s, -(ki * acc_err) * p.OneC);
@@ -29,10 +31,10 @@ for k = 1:length(stepTypes)
             SOC_n_ch(end+1) = s.SOC_n;
         end
         
-        while s.I < -ChParams(k) * p.OneC
-            err = VCutoffs(k) * VMax - s.V;
+        while s(end).I < -ChParams(k) * p.OneC
+            err = VCutoffs(k) * VMax - s(end).V;
             acc_err = acc_err + err;
-            s = updateState(p, sys_n, sys_p, s, -(ki * acc_err) * p.OneC);
+            s = updateState(p, sys_n, sys_p, s(end), -(ki * acc_err) * p.OneC);
             states_ch(end+1) = s;
             Voltage_ch(end+1) = s.V;
             SOC_n_ch(end+1) = s.SOC_n;
@@ -44,11 +46,11 @@ states_dsch = s;
 Voltage_dsch = s.V;
 SOC_n_dsch = s.SOC_n;
 
-while s.V > VMin
-    s = updateState(p, sys_n, sys_p, s, -DschRate * p.OneC);
-    states_dsch(end+1) = s;
-    Voltage_dsch(end+1) = s.V;
-    SOC_n_dsch(end+1) = s.SOC_n;
+while s(end).V > VMin
+    s = updateState2(p, sys_n, sys_p, s(end), -DschRate * p.OneC, 10);
+    states_dsch(end+1:end+10) = s;
+    Voltage_dsch(end+1:end+10) = s.V;
+    SOC_n_dsch(end+1:end+10) = s.SOC_n;
 end    
 
 end

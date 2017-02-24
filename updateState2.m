@@ -36,7 +36,8 @@ state = s;
 
 for k = 2:time
     % SPMe Voltage w/o electrolyte concentration term
-    state(k).V_noVCE = nonlinearSPMOutputVoltage_Scott(p,c_ss_n(k),c_ss_p(k),cen_bar(k),ces_bar(k),cep_bar(k),I(k));
+    %state(k).
+    V_noVCE = nonlinearSPMOutputVoltage_Scott(p,c_ss_n(k),c_ss_p(k),cen_bar(k),ces_bar(k),cep_bar(k),I(k));
     
     % Overpotentials due to electrolyte subsystem
     kap_n = electrolyteCond(cen_bar(k));
@@ -57,16 +58,18 @@ for k = 2:time
     end
     
     % Overpotential due to electrolyte conductivity
-    state(k).V_electrolyteCond = (p.L_n/(2*kap_n_eff) + 2*p.L_s/(2*kap_s_eff) + p.L_p/(2*kap_p_eff))*I(k); ...
+    %state(k).
+    V_electrolyteCond = (p.L_n/(2*kap_n_eff) + 2*p.L_s/(2*kap_s_eff) + p.L_p/(2*kap_p_eff))*I(k); ...
         
     % Overpotential due to electrolyte polarization
-    state(k).V_electrolytePolar = (2*p.R*p.T_amb)/(p.Faraday) * (1-p.t_plus)* ...
+    %state(k).
+    V_electrolytePolar = (2*p.R*p.T_amb)/(p.Faraday) * (1-p.t_plus)* ...
             ( (1+dfca_n) * (log(cens(k)) - log(ce0n(k))) ...
              +(1+dfca_s) * (log(cesp(k)) - log(cens(k))) ...
              +(1+dfca_p) * (log(ce0p(k)) - log(cesp(k))));
     
     % Add 'em up!
-    state(k).V = state(k).V_noVCE + state(k).V_electrolyteCond + state(k).V_electrolytePolar;
+    state(k).V = V_noVCE + V_electrolyteCond + V_electrolytePolar;
     
     % SPM Voltage
     state(k).V_spm = nonlinearSPMOutputVoltage_Scott(p,c_ss_n(k),c_ss_p(k),p.c_e,p.c_e,p.c_e,I(k));
